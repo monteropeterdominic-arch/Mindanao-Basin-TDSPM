@@ -9,7 +9,7 @@ Mt Apo summit: 6.98750 N, 125.27083 E.  Output: outputs/layer_screening.csv
 Inputs (from preprocess_inputs.py / prepare_population.py, in model-cell order):
 inputs/down_index_int32.bin, inputs/landcover_frac_float32.bin, inputs/population_float32.bin,
 inputs/observations.csv, plus per-cell elevation (m), slope (deg) and x, y (UTM 51N, m)
-saved by preprocess_inputs.py as inputs/cell_terrain.npz (arrays elev, slope, x, y).
+in inputs/cell_terrain.npz (arrays elev, slope, x, y, lith).
 """
 import numpy as np, pandas as pd
 from scipy.optimize import lsq_linear
@@ -36,6 +36,10 @@ dkm = np.hypot(t['x'] - ax, t['y'] - ay) / 1000
 layers = {'Mt Apo within 15 km': (dkm <= 15) * 1.0, 'Mt Apo within 25 km': (dkm <= 25) * 1.0,
           'Mt Apo proximity exp(-d/20 km)': np.exp(-dkm / 20), 'Elevation (km)': t['elev'] / 1000,
           'Slope (deg/10)': t['slope'] / 10}
+# lithology groups rasterized from USGS geo3bl (OFR 97-470-F): 1 young volcanic (Q/NQ volcanic),
+# 2 older volcanic/intrusive, 3 Quaternary sediments, 4 Tertiary sedimentary, 5 pre-Tertiary basement
+LN = {1: 'Young volcanic', 2: 'Older volcanic/intrusive', 3: 'Quaternary sediments', 4: 'Tertiary sedimentary', 5: 'Pre-Tertiary basement'}
+for k, v in LN.items(): layers['Lithology: ' + v] = (t['lith'] == k) * 1.0
 cid = obs.cell_index.values.astype(int) - 1
 y = obs.TDS_used.values.astype(float); grp = obs.river.values; tst = (obs.set == 'independent test').values
 Xp = Pr[cid] / Q[cid] / 1000

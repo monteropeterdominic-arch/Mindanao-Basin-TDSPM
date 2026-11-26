@@ -7,3 +7,9 @@ Uniform + pop. + Volcanic: proximity exp(-d/20 km),89.8,45.4,103.6,144.0 | 0.0 |
 Uniform + pop. + Elevation (km),105.0,66.3,74.2,123.2 | 2682.1 | 24.1
 Uniform + pop. + Slope (degrees/10),95.9,58.7,64.4,109.3 | 3321.5 | 22.9
 Uniform + pop. + Mt Apo 25 km + elevation,110.2,54.3,190.9,176.3 | 0.0 | 141.2 | -37.9
+Uniform + pop. + Young volcanic (Quaternary),117.1,60.0,68.3,138.4 | 1604.9 | 34.7
+Uniform + pop. + Older volcanic/intrusive,97.4,53.4,153.5,150.9 | 1769.9 | -37.0
+Uniform + pop. + Quaternary sediments,98.1,55.2,58.1,149.6 | 2167.6 | -18.0
+Uniform + pop. + Tertiary sedimentary,100.9,56.0,59.4,146.4 | 1727.3 | 9.7
+Uniform + pop. + Pre-Tertiary basement,106.6,52.4,112.8,159.4 | 820.0 | -29.6
+Uniform + pop. + young volcanic + Tertiary sedimentary,119.7,61.7,74.1,133.7 | 1363.3 | 37.7 | 22.0
