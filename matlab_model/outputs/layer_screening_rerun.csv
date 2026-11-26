@@ -1,0 +1,12 @@
+model,test_rmse,loo_rmse,loro_rmse
+Uniform + population,95.9,53.2,54.1
+Uniform + population + Mt Apo within 15 km,441.7,54.4,158.6
+Uniform + population + Mt Apo within 25 km,157.1,53.8,60.8
+Uniform + population + Mt Apo proximity exp(-d/20 km),89.8,45.4,103.6
+Uniform + population + Elevation (km),105.0,66.3,74.2
+Uniform + population + Slope (deg/10),95.9,58.7,64.4
+Uniform + population + Lithology: Young volcanic,117.1,60.0,68.3
+Uniform + population + Lithology: Older volcanic/intrusive,97.4,53.4,153.5
+Uniform + population + Lithology: Quaternary sediments,98.1,55.2,58.1
+Uniform + population + Lithology: Tertiary sedimentary,100.9,56.0,59.4
+Uniform + population + Lithology: Pre-Tertiary basement,106.6,52.4,112.8

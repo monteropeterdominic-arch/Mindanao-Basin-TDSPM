@@ -4,21 +4,26 @@ independent test (fit on 16, predict 6), leave-one-site-out, leave-one-river-out
 
 Each layer v enters as a flow-weighted upstream mean, sum(runoff * v) / sum(runoff), with an
 unconstrained coefficient; background and population coefficients are non-negative.
-Mt Apo summit: 6.98750 N, 125.27083 E.  Output: outputs/layer_screening.csv
+Mt Apo summit: 6.98750 N, 125.27083 E.  Output: outputs/layer_screening_rerun.csv (the committed layer_screening.csv also lists the null model and coefficients)
 
 Inputs (from preprocess_inputs.py / prepare_population.py, in model-cell order):
 inputs/down_index_int32.bin, inputs/landcover_frac_float32.bin, inputs/population_float32.bin,
 inputs/observations.csv, plus per-cell elevation (m), slope (deg) and x, y (UTM 51N, m)
 in inputs/cell_terrain.npz (arrays elev, slope, x, y, lith).
 """
+import gzip, os
 import numpy as np, pandas as pd
 from scipy.optimize import lsq_linear
 from pyproj import Transformer
 
-down = np.fromfile('inputs/down_index_int32.bin', np.int32).astype(np.int64)   # 1-based, 0 = outlet
+def load(name, dt):
+    if not os.path.exists(name):
+        with gzip.open(name + '.gz', 'rb') as f: return np.frombuffer(f.read(), dt)
+    return np.fromfile(name, dt)
+down = load('inputs/down_index_int32.bin', np.int32).astype(np.int64)   # 1-based, 0 = outlet
 n = down.size
-F = np.fromfile('inputs/landcover_frac_float32.bin', np.float32).reshape(5, n).T
-P = np.fromfile('inputs/population_float32.bin', np.float32).astype(float)
+F = load('inputs/landcover_frac_float32.bin', np.float32).reshape(5, n).T
+P = load('inputs/population_float32.bin', np.float32).astype(float)
 t = np.load('inputs/cell_terrain.npz')
 obs = pd.read_csv('inputs/observations.csv')
 r0 = np.array([0.20, 0.35, 0.80, 0.30, 0.50])
@@ -58,5 +63,5 @@ def evaluate(extra):
 
 rows = [dict(model='Uniform + population', **evaluate([]))]
 rows += [dict(model='Uniform + population + ' + k, **evaluate([k])) for k in layers]
-pd.DataFrame(rows).round(1).to_csv('outputs/layer_screening.csv', index=False)
+pd.DataFrame(rows).round(1).to_csv('outputs/layer_screening_rerun.csv', index=False)
 print(pd.DataFrame(rows).round(1).to_string(index=False))
