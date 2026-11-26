@@ -1,0 +1,17 @@
+site,river,observed,fitted,loo,loro,share_tree,share_crop,share_built,share_grass,share_water
+"Tboli (Laconon)","Allah River",130.00,124.55,123.69,115.17,0.6276,0.0032,0.0075,0.3617,0.0000
+"Surallah (Veterans)","Allah River",170.00,132.13,128.42,123.67,0.5443,0.0541,0.0394,0.3253,0.0369
+"Sto. Nino (Manuel Roxas)","Allah River",160.00,144.01,142.95,136.99,0.4314,0.1241,0.0343,0.3838,0.0264
+"Isulan (Bambad)","Allah River",155.00,145.31,144.65,138.44,0.4203,0.1498,0.0333,0.3685,0.0281
+"Esperanza (Salabaca)","Allah River",165.00,157.53,156.66,152.15,0.3237,0.3673,0.0664,0.2263,0.0163
+"Mother Kalanganan, Cotabato City","Rio Grande de Mindanao",166.17,157.92,156.93,155.01,0.3209,0.2835,0.0460,0.2773,0.0722
+"Maidapa, Sultan Kudarat","Rio Grande de Mindanao",155.08,158.70,159.15,155.72,0.3153,0.2903,0.0446,0.2772,0.0727
+"Ganta, Mother Kabuntalan","Rio Grande de Mindanao",162.14,158.30,157.83,155.36,0.3181,0.2944,0.0455,0.2801,0.0618
+"Balong, Northern Kabuntalan","Rio Grande de Mindanao",156.74,156.93,156.95,154.10,0.3281,0.3067,0.0485,0.2542,0.0626
+"Reina Regente, Datu Piang","Rio Grande de Mindanao",161.43,156.65,156.12,153.84,0.3302,0.3079,0.0486,0.2551,0.0581
+"Upper Baguik-ikan R., Pangantucan","Muleta watershed",56.67,101.26,135.87,123.63,0.9615,0.0000,0.0000,0.0385,0.0000
+"Malinao R., Kadingilan","Muleta watershed",80.00,160.31,171.54,163.20,0.3038,0.3699,0.0505,0.2748,0.0009
+"Omonay R., Damulog","Muleta watershed",173.33,153.51,151.69,158.64,0.3538,0.3064,0.0503,0.2878,0.0016
+"T1 Bonacao Bridge","Tigua River",137.00,116.73,111.27,111.05,0.7248,0.0375,0.0077,0.2300,0.0000
+"T2 Supitan Bridge 2","Tigua River",130.00,131.55,131.70,128.08,0.5504,0.0916,0.0172,0.3406,0.0002
+"T3 Halapitan","Tigua River",136.00,139.18,139.40,136.85,0.4751,0.1486,0.0276,0.3458,0.0029

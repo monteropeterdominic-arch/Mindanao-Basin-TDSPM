@@ -1,0 +1,6 @@
+model,n_parameters,rmse_fit,rmse_loo,rho_loo,rmse_loro,rho_loro
+Null (mean of training sites),1,31.61,33.72,NaN,36.29,NaN
+5 classes,5,20.33,35.86,0.090,34.50,0.455
+3 groups: natural / human / water,3,26.87,36.90,0.016,54.17,0.371
+2 groups: natural / human+water,2,29.10,34.42,0.178,35.30,0.210
+2 groups: tree / non-tree,2,26.51,33.71,0.233,31.50,0.375
