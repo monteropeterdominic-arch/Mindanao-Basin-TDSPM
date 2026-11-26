@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mindanao River Basin TDS Simulator</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14110f;--mute:#5d5a66;--rule:#e3e2ea;--acc:#1d2bd8;--bg:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink)}
+#app{display:grid;grid-template-columns:360px 1fr;height:100%}
+#panel{overflow-y:auto;padding:18px 18px 28px;border-right:1px solid var(--rule);background:var(--bg)}
+#map{height:100%}
+h1{font-size:20px;line-height:1.2;margin:0 0 6px}
+h2{font-size:13px;font-weight:600;color:var(--mute);margin:18px 0 6px}
+p{margin:4px 0}
+.small{font-size:13px;color:var(--mute)}
+label{display:block;font-size:14px;margin:10px 0 2px}
+label b{float:right;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--acc)}
+select{width:100%;font:inherit;padding:8px;border:1px solid var(--rule);border-radius:8px;min-height:40px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button,.btn{font:500 14px Inter,sans-serif;min-height:38px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:#fff;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.big div{border-top:1px solid var(--rule);padding-top:6px}
+.big b{display:block;font-size:24px;line-height:1.1}
+.big span{font-size:12px;color:var(--mute)}
+.warn{border-left:3px solid #c2410c;padding:4px 0 4px 10px;font-size:13px;margin-top:10px}
+.legend{background:#fff;padding:8px 10px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.25);font-size:12px;line-height:1.3}
+.legend .bar{width:180px;height:10px;border-radius:3px;margin:4px 0 2px}
+.legend .ticks{display:flex;justify-content:space-between}
+@media(max-width:800px){#app{grid-template-columns:1fr;grid-template-rows:55vh auto}#map{order:-1;height:55vh}#panel{border-right:0}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="panel">
+  <h1>Mindanao River Basin TDS simulator</h1>
+  <p class="small">Routed land-cover + population model of total dissolved solids (Montero &amp; Navaluna, University of Southern Mindanao). Move the sliders: every river reach is recomputed in your browser.</p>
+
+  <h2>Model structure</h2>
+  <select id="model"></select>
+  <p class="small" id="modelNote"></p>
+
+  <h2>Scenario</h2>
+  <label>Forest → cropland <b id="v_a">0%</b></label><input id="a" type="range" min="0" max="60" step="5" value="0">
+  <label>Cropland → forest <b id="v_b">0%</b></label><input id="b" type="range" min="0" max="60" step="5" value="0">
+  <label>Built-up area × <b id="v_m">1.0</b></label><input id="m" type="range" min="1" max="4" step="0.25" value="1">
+  <label>Population × <b id="v_p">1.0</b></label><input id="p" type="range" min="0" max="3" step="0.1" value="1">
+  <div class="seg" style="margin-top:10px">
+    <button type="button" id="presetS1">S1 forest loss</button>
+    <button type="button" id="presetS4">S4 people +50%</button>
+    <button type="button" id="reset">Reset</button>
+  </div>
+
+  <h2>Show on map</h2>
+  <div class="seg" id="show">
+    <button type="button" data-k="tds" aria-pressed="true">TDS (mg/L)</button>
+    <button type="button" data-k="chg" aria-pressed="false">Change from today</button>
+  </div>
+
+  <h2>River mouth (Cotabato City)</h2>
+  <div class="big">
+    <div><b id="o_now">–</b><span>TDS today, mg/L</span></div>
+    <div><b id="o_scn">–</b><span>under scenario, mg/L</span></div>
+    <div><b id="o_d">–</b><span>change, mg/L</span></div>
+    <div><b id="o_pop">–</b><span>share from population</span></div>
+  </div>
+
+  <div class="warn">Validation on 22 published sites: no structure predicts held-out rivers better than the average of the other sites (best 54.1 vs 52.5 mg/L). Treat maps as scenarios, not measurements. Squares are published sites: click one to compare.</div>
+
+  <h2>Data</h2>
+  <p class="small">Terrain ALOS AW3D30 (OpenTopography); land cover ESA WorldCover 2021; population WorldPop 2020; 22 published TDS surveys. Imagery © Esri; streets © OpenStreetMap contributors. Built-up doubling is applied to routed totals, an approximation.</p>
+  <p class="small"><a href="TDS_MRB_GoogleEarth.kml" download>Download for Google Earth / Google My Maps (KML)</a> · <a href="https://github.com/monteropeterdominic-arch/Mindanao-Basin-TDSPM">Code, data and paper</a></p>
+</div>
+<div id="map"></div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+{
+const MODELS = [
+  {name:'Uniform land + population (selected)', groups:[0,0,0,0,0], c:[148.059], beta:1825.074, note:'Best of the five by leave-one-river-out cross-validation. Land cover only changes how much water dilutes the population load.'},
+  {name:'Tree / cropland / other + population', groups:[0,1,2,2,2], c:[130.0,0.0,250.5], beta:2418.7, note:'Best land-cover structure on the independent test; cropland source fitted as 0, so more cropland dilutes.'},
+  {name:'Five classes + population', groups:[0,1,2,3,4], c:[129.8,0.0,840.8,270.6,87.0], beta:0.0, note:'Most flexible; population fitted as 0. Overfits.'},
+  {name:'Tree / non-tree + population', groups:[0,1,1,1,1], c:[160.4,109.9], beta:2652.0, note:'Forest fitted higher than non-forest, opposite to v1.'},
+  {name:'Tree / non-tree (v1 structure)', groups:[0,1,1,1,1], c:[168.9,145.0], beta:0, note:'The v1 16-site model, refitted to 22 sites.'}
+];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let D, R, mi = 0, show = 'tds', lines = [];
+const sel = $('model'); sel.innerHTML = MODELS.map((m, i) => `<option value="${i}">${esc(m.name)}</option>`).join('');
+
+function scen(F, P, s) {               // F = routed class fractions [tree,crop,built,grass,water]
+  let f = F.slice();
+  const a = s.a, b = s.b;
+  let mv = a * f[0]; f[0] -= mv; f[1] += mv;
+  mv = b * f[1]; f[1] -= mv; f[0] += mv;
+  if (s.m > 1) { let add = (s.m - 1) * f[2], t = Math.min(add, f[1]); f[1] -= t; add -= t; const t2 = Math.min(add, f[0]); f[0] -= t2; f[2] += t + t2; }
+  return [f, P * s.p];
+}
+function tdsOf(F, P, m) {
+  let q = 0, load = 0;
+  for (let k = 0; k < 5; k++) { const w = R[k] * F[k]; q += w; load += m.c[m.groups[k]] * w; }
+  return q > 0 ? (load + m.beta * P / 1000) / q : NaN;
+}
+const S0 = {a:0, b:0, m:1, p:1};
+const cur = () => ({a:+$('a').value / 100, b:+$('b').value / 100, m:+$('m').value, p:+$('p').value});
+
+const VIR = ['#440154','#482878','#3e4989','#31688e','#26828e','#1f9e89','#35b779','#6ece58','#b5de2b','#fde725'];
+function ramp(t, cols) { t = Math.max(0, Math.min(1, t)); const x = t * (cols.length - 1), i = Math.floor(x), f = x - i;
+  if (i >= cols.length - 1) return cols[cols.length - 1];
+  const h = c => [1,3,5].map(j => parseInt(c.substr(j, 2), 16)), A = h(cols[i]), B = h(cols[i + 1]);
+  return '#' + A.map((v, j) => Math.round(v + (B[j] - v) * f).toString(16).padStart(2, '0')).join(''); }
+const DIV = ['#2166ac','#67a9cf','#d1e5f0','#f7f7f7','#fddbc7','#ef8a62','#b2182b'];
+const colTDS = v => ramp((v - 140) / 80, VIR);
+const colChg = (v, M) => ramp(0.5 + v / (2 * M), DIV);
+
+const map = L.map('map', {preferCanvas: true, zoomControl: true});
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics'});
+const lab = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Labels © Esri'});
+const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '© OpenStreetMap contributors'});
+const topo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Topo © Esri'});
+const hybrid = L.layerGroup([sat, lab]).addTo(map);
+L.control.layers({'Satellite + labels': hybrid, 'Streets (OSM)': osm, 'Topographic': topo}, {}, {position: 'topright'}).addTo(map);
+L.control.scale({imperial: false}).addTo(map);
+const legend = L.control({position: 'bottomright'});
+legend.onAdd = () => { const d = L.DomUtil.create('div', 'legend'); d.id = 'legend'; return d; };
+legend.addTo(map);
+
+function setLegend(M) {
+  const el = $('legend');
+  if (show === 'tds') el.innerHTML = `<b>Simulated TDS (mg/L)</b><div class="bar" style="background:linear-gradient(90deg,${VIR.join(',')})"></div><div class="ticks"><span>140</span><span>180</span><span>220+</span></div>`;
+  else el.innerHTML = `<b>Change from today (mg/L)</b><div class="bar" style="background:linear-gradient(90deg,${DIV.join(',')})"></div><div class="ticks"><span>−${M.toFixed(1)}</span><span>0</span><span>+${M.toFixed(1)}</span></div>`;
+}
+function update() {
+  const m = MODELS[mi], s = cur();
+  $('v_a').textContent = Math.round(s.a * 100) + '%'; $('v_b').textContent = Math.round(s.b * 100) + '%';
+  $('v_m').textContent = s.m.toFixed(2).replace(/0$/, ''); $('v_p').textContent = s.p.toFixed(1);
+  $('modelNote').textContent = m.note;
+  const now = [], scn = [];
+  for (const sg of D.segs) { now.push(tdsOf(sg[1], sg[2], m)); const [f, p] = scen(sg[1], sg[2], s); scn.push(tdsOf(f, p, m)); }
+  let M = 0.5; if (show === 'chg') for (let i = 0; i < scn.length; i++) M = Math.max(M, Math.abs(scn[i] - now[i]));
+  lines.forEach((ln, i) => { const v = show === 'tds' ? colTDS(scn[i]) : colChg(scn[i] - now[i], M); ln.setStyle({color: v}); ln._v = [now[i], scn[i]]; });
+  const o = D.outlet, o0 = tdsOf(o.F, o.P, m), [of, op] = scen(o.F, o.P, s), o1 = tdsOf(of, op, m);
+  const popPart = m.beta * op / 1000 / of.reduce((q, v, k) => q + R[k] * v, 0);
+  $('o_now').textContent = o0.toFixed(1); $('o_scn').textContent = o1.toFixed(1);
+  $('o_d').textContent = (o1 - o0 >= 0 ? '+' : '') + (o1 - o0).toFixed(1); $('o_pop').textContent = Math.round(100 * popPart / o1) + '%';
+  sites.forEach((mk, i) => { const st = D.sites[i]; mk._pred = tdsOf(st.F, st.P, m); });
+  setLegend(M);
+}
+let sites = [];
+fetch('data.json').then(r => r.json()).then(j => {
+  D = j; R = D.r;
+  const outline = L.polygon(D.outline, {color: '#ffffff', weight: 1.5, fill: false, dashArray: '4 3'}).addTo(map);
+  map.fitBounds(outline.getBounds());
+  for (const sg of D.segs) {
+    const w = Math.max(1, Math.min(6, 0.9 * Math.log10(sg[3])));
+    const ln = L.polyline(sg[0], {weight: w, opacity: 0.95, color: '#888'}).addTo(map);
+    ln.on('click', e => { const [a, b] = ln._v; L.popup().setLatLng(e.latlng).setContent(
+      `<b>River reach</b><br>Drains ${Number(sg[3]).toLocaleString()} km²<br>Upstream population ${Math.round(sg[2]).toLocaleString()}<br>Forest share ${(100 * sg[1][0] / sg[1].reduce((x, y) => x + y, 0)).toFixed(0)}%<br>TDS today ${a.toFixed(1)} mg/L<br>Scenario ${b.toFixed(1)} mg/L (${b - a >= 0 ? '+' : ''}${(b - a).toFixed(2)})`).openOn(map); });
+    lines.push(ln);
+  }
+  sites = D.sites.map(st => {
+    const mk = L.marker([st.lat, st.lon], {icon: L.divIcon({className: '', html: `<div style="width:12px;height:12px;border:2px solid #111;background:${st.set === 'calibration' ? '#111' : '#fff'}"></div>`, iconSize: [12, 12]})}).addTo(map);
+    mk.on('click', () => mk.bindPopup(`<b>${esc(st.n)}</b><br>${esc(st.r)} · ${esc(st.set)}<br>${esc(st.src)}, ${esc(st.date)}<br>Observed ${st.obs} mg/L<br>Model (fitted, this structure) ${mk._pred.toFixed(1)} mg/L<br>Predicted with its river held out ${st.loro} mg/L (selected model)`).openPopup());
+    return mk;
+  });
+  update();
+}).catch(() => { $('modelNote').textContent = 'Map data could not be loaded.'; });
+['a', 'b', 'm', 'p'].forEach(id => $(id).addEventListener('input', () => { if (D) update(); }));
+sel.addEventListener('change', () => { mi = +sel.value; if (D) update(); });
+$('show').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; show = b.dataset.k;
+  $('show').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); if (D) update(); });
+const setS = (a, b, m, p) => { $('a').value = a; $('b').value = b; $('m').value = m; $('p').value = p; if (D) update(); };
+$('presetS1').onclick = () => setS(20, 0, 1, 1); $('presetS4').onclick = () => setS(0, 0, 1, 1.5); $('reset').onclick = () => setS(0, 0, 1, 1);
+}
+</script>
+</body>
+</html>
