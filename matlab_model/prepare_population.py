@@ -1,4 +1,4 @@
-"""Build inputs/population_float32.bin and update inputs/observations.csv.
+"""Build inputs/population_float32.bin (people per 90 m model cell) from WorldPop 2020.
 
 WorldPop 2020 1 km (unconstrained, UN-unadjusted; phl_ppp_2020_1km_Aggregated_UNadj.tif)
 is converted to people per m2, averaged onto the 90 m UTM 51N model grid and multiplied
