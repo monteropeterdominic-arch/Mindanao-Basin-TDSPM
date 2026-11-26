@@ -1,0 +1,5 @@
+scenario,outlet_TDS_mgL,change_mgL,change_ci_low,change_ci_high
+S0 current,157.92,0,,
+S1 20% of tree cover to cropland,173.72,15.80,-7.54,27.70
+S2 built-up doubled,159.49,1.57,-0.75,2.75
+S3 20% of cropland to tree cover,153.97,-3.95,-6.92,1.88
