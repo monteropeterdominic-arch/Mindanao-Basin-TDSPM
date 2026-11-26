@@ -1,11 +1,11 @@
-item,value,ci_low,ci_high
-c_tree_mgL,99.12,66.55,168.63
-c_nontree_mgL,219.42,106.75,279.45
-P_nontree_gt_tree,0.9020,,
-evaporation_e,0.0000,,
-rmse_fit,26.51,,
-rmse_loo,33.71,,
-rmse_loro,31.50,,
-c_tree_uniform_runoff,102.74,,
-c_nontree_uniform_runoff,256.98,,
-rmse_loo_uniform_runoff,34.58,,
+term,value,ci_low,ci_high,mc_p05,mc_p95
+"Background (all land)",148.059,96.200,179.253,142.766,152.214
+"Population (mg/L per 1000 persons per runoff unit)",1825.074,0.000,7376.672,1203.354,2384.693
+"model",5,,,,
+"rmse_fit",47.47,,,,
+"rmse_loo",53.18,,,,
+"rmse_loro",54.11,,,,
+"nse_loro",-0.276,,,,
+"outlet_TDS",162.71,,,161.84,162.90
+"outlet_TDS_from_population",14.65,,,,
+"mc_loro_rmse",54.07,,,53.21,54.35

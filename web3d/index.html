@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mindanao Basin TDS 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a journal figure you can turn in your hands; calm, exact, honest about uncertainty.
+   IDEA: the basin as a relief model on a lab bench, rivers painted by what they carry.
+   PICTURE: the 3D relief itself, large, with channels coloured by simulated TDS.
+   COLOUR and TYPE: white ground, ink, ultramarine accent; Spectral titles, Inter text.
+   LAYOUT: title row, then relief (2/3) beside a ruled column of controls and figures. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0d0e18);--ink:light-dark(#14110f,#e9e7f2);--mute:light-dark(#5d5a66,#a6a3b5);--rule:light-dark(#e3e2ea,#262838);--acc:light-dark(#1d2bd8,#8d96ff);--card:light-dark(#f6f6fa,#151726)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3vw,40px) max(4vw,16px)}
+h1{font:500 clamp(28px,3.6vw,44px)/1.08 Spectral,Georgia,serif;margin:0 0 8px;text-wrap:balance;max-width:28ch}
+.lede{color:var(--mute);max-width:70ch;margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:28px;align-items:start}
+.fig{position:relative;height:min(74vh,720px);min-height:420px;border:1px solid var(--rule);border-radius:10px;background:var(--card)}
+#plot{position:absolute;inset:0}
+#loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:14px}
+.side h2{font:600 13px/1.3 Inter,sans-serif;margin:18px 0 8px;color:var(--mute)}
+.side h2:first-child{margin-top:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:500 14px Inter,sans-serif;min-height:40px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0}
+.kpi div{border-top:1px solid var(--rule);padding-top:8px}
+.kpi b{display:block;font:500 26px/1.1 Spectral,serif}
+.kpi span{font-size:13px;color:var(--mute)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+th{font-weight:600;color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:10px 0 0}
+.verdict{border-left:3px solid var(--acc);padding:4px 0 4px 12px;margin:14px 0 0;font-size:15px}
+a{color:var(--acc)}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.fig{height:62vh}}
+@media(max-width:600px){table{font-size:13px}.kpi b{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="band">
+  <h1>Where people, forests and rivers meet: simulated TDS in the Mindanao River Basin</h1>
+  <p class="lede">Drag to rotate, scroll to zoom. The relief is ALOS AW3D30 terrain (×12 vertical); channels draining ≥200 km² are coloured by the routed TDS model, and the 22 published sites are shown as squares.</p>
+</div>
+<div class="band" style="padding-top:0">
+  <div class="grid">
+    <div class="fig"><div id="plot" role="img" aria-label="3D relief of the Mindanao River Basin with channels coloured by simulated total dissolved solids"></div><div id="loading">Loading terrain…</div></div>
+    <aside class="side">
+      <h2>Land surface</h2>
+      <div class="seg" id="landBtns"></div>
+      <h2>Channel colour</h2>
+      <div class="seg" id="chBtns"></div>
+      <p class="note" id="chNote"></p>
+      <h2>Validation, 22 sites on 7 rivers</h2>
+      <div class="kpi">
+        <div><b>54.1</b><span>mg/L leave-one-river-out RMSE, best model</span></div>
+        <div><b>52.5</b><span>mg/L for the null model (training mean)</span></div>
+        <div><b>+7.3</b><span>mg/L outlet TDS if population rises 50% (95%: 0.0–29.6)</span></div>
+        <div><b>162.7</b><span>mg/L simulated outlet TDS, 9% from population</span></div>
+      </div>
+      <p class="verdict">No model beats the training mean: published data cannot yet resolve how forests and farms change TDS. Between-river differences dominate.</p>
+      <h2>Outlet change by model structure (mg/L)</h2>
+      <div style="overflow-x:auto"><table id="scTab"></table></div>
+      <p class="note">Each structure fitted by non-negative least squares to the 22 sites. Negative forest-to-crop values are a fitting artefact (cropland source set to zero), not evidence that farms lower TDS.</p>
+      <p class="note">Montero &amp; Navaluna, University of Southern Mindanao. Code and data: <a href="https://github.com/monteropeterdominic-arch/Mindanao-Basin-TDSPM">Mindanao-Basin-TDSPM</a>.</p>
+    </aside>
+  </div>
+</div>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+{
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LAND = [['tree','Tree cover'],['pop','Population'],['elev','Elevation']];
+const CH = [['tds','Simulated TDS'],['pop','Population part'],['s0','S1 forest→crop'],['s1','S2 built-up ×2'],['s2','S3 crop→forest'],['s3','S4 people +50%'],['s4','S5 S1+S4']];
+const NOTES = {tds:'Routed TDS from the selected model (uniform land background + population).',pop:'Part of the simulated TDS attributed to the population term.',
+  s0:'Change under S1 for the selected model; land cover only changes dilution here.',s1:'Change under S2 for the selected model.',s2:'Change under S3 for the selected model.',s3:'Change under S4: population +50%.',s4:'Change under S5: S1 and S4 together.'};
+let D = null, land = 'tree', ch = 'tds';
+const dark = () => document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+function buttons(id, list, get, set) {
+  const el = document.getElementById(id);
+  el.innerHTML = list.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === get()}">${esc(l)}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (!b) return; set(b.dataset.k); el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === get())); draw(); };
+}
+function table() {
+  const s = D.scen, keys = ['dS1_tree_to_crop','dS2_builtup_x2','dS3_crop_to_tree','dS4_pop_x1.5','dS5_S1_and_S4'];
+  const short = ['Tree/non-tree','Tree/non-tree + pop.','Tree/crop/other + pop.','5 classes + pop.','Uniform + pop. ★'];
+  let h = '<thead><tr><th>Structure</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th></tr></thead><tbody>';
+  s.model.forEach((m, i) => { h += `<tr><td>${esc(short[i] || m)}</td>` + keys.map(k => `<td>${Number(s[k][i]).toFixed(1)}</td>`).join('') + '</tr>'; });
+  document.getElementById('scTab').innerHTML = h + '</tbody>';
+}
+function draw() {
+  if (!D) return;
+  const nx = D.nx, ny = D.ny, dx = D.dx;
+  const xs = Array.from({length: nx}, (_, i) => +(i * dx).toFixed(2)), ys = Array.from({length: ny}, (_, j) => +(-j * dx).toFixed(2));
+  const sc = {tree: [D.tree, 'Greens', 0, 1, 'Tree-cover fraction', false], pop: [D.pop, 'Greys', 1, 3.5, 'log₁₀ persons/km²', false], elev: [D.z, 'Earth', 0, 2400, 'Elevation (m)', false]}[land];
+  const surf = {type: 'surface', x: xs, y: ys, z: D.z, surfacecolor: sc[0], colorscale: sc[1], reversescale: land === 'tree' ? false : land === 'pop', cmin: sc[2], cmax: sc[3],
+    showscale: true, colorbar: {title: {text: sc[4], side: 'right'}, x: 0.0, len: 0.45, y: 0.25, thickness: 12},
+    lighting: {ambient: 0.6, diffuse: 0.7, roughness: 0.9}, hoverinfo: 'skip', contours: {z: {show: false}}};
+  const c = D.ch; let col, cmin, cmax, cs, lab;
+  if (ch === 'tds') { col = c.tds; cmin = 145; cmax = 200; cs = 'Plasma'; lab = 'TDS (mg/L)'; }
+  else if (ch === 'pop') { col = c.pop; cmin = 0; cmax = 40; cs = 'Plasma'; lab = 'Population part (mg/L)'; }
+  else { const k = +ch[1]; col = c.sc[k]; const m = Math.max(1, ...col.map(Math.abs)); cmin = -m; cmax = m; cs = 'RdBu'; lab = 'Change (mg/L)'; }
+  const chan = {type: 'scatter3d', mode: 'markers', x: c.x, y: c.y, z: c.z.map(v => v + 60), marker: {size: 2.6, color: col, colorscale: cs, reversescale: cs === 'RdBu', cmin, cmax,
+    colorbar: {title: {text: lab, side: 'right'}, x: 1.0, len: 0.45, y: 0.25, thickness: 12}}, text: col.map((v, i) => `${lab}: ${v}<br>Drains ${c.acc[i]} km²`), hoverinfo: 'text', name: 'Channels'};
+  const st = {type: 'scatter3d', mode: 'markers', x: D.sites.map(s => s.x), y: D.sites.map(s => s.y), z: D.sites.map(s => s.z),
+    marker: {size: 5, symbol: 'square', color: D.sites.map(s => s.set === 'calibration' ? '#14110f' : '#ffffff'), line: {color: '#14110f', width: 1}},
+    text: D.sites.map(s => `${esc(s.n)}<br>${esc(s.r)} (${esc(s.set)})<br>Observed TDS ${s.tds.toFixed(0)} mg/L`), hoverinfo: 'text', name: 'Published sites'};
+  const ink = dark() ? '#e9e7f2' : '#14110f';
+  const layout = {margin: {l: 0, r: 0, t: 0, b: 0}, paper_bgcolor: 'rgba(0,0,0,0)', showlegend: false, font: {family: 'Inter, sans-serif', size: 12, color: ink},
+    scene: {aspectmode: 'manual', aspectratio: {x: nx / ny, y: 1, z: 0.28}, xaxis: {visible: false}, yaxis: {visible: false}, zaxis: {visible: false},
+      camera: {eye: {x: -0.9, y: -1.35, z: 0.95}}}};
+  Plotly.react('plot', [surf, chan, st], layout, {displaylogo: false, responsive: true, modeBarButtonsToRemove: ['toImage']});
+  document.getElementById('chNote').textContent = NOTES[ch];
+}
+buttons('landBtns', LAND, () => land, k => land = k);
+buttons('chBtns', CH, () => ch, k => ch = k);
+fetch('data.json').then(r => r.json()).then(j => { D = j; document.getElementById('loading').remove(); table(); draw(); })
+  .catch(() => { document.getElementById('loading').textContent = 'The terrain data could not be loaded.'; });
+new MutationObserver(draw).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
+}
+</script>
+</body>
+</html>

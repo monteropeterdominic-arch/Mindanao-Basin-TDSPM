@@ -1,18 +1,24 @@
-source,river,site,lat,lon,TDS_mgL,EC_uScm,date,method,TDS_used,TDS_estimated_from_EC,row,col,upstream_km2,in_basin,use,snap_note
-Brillantes et al. 2026 (preprint),Allah River,Tboli (Laconon),6.142,124.773,130.0,250.0,2024-12,meter; site mean,130.0,False,3338,1494,86.589,True,True,
-Brillantes et al. 2026 (preprint),Allah River,Surallah (Veterans),6.259,124.793,170.0,340.0,2024-12,meter; site mean,170.0,False,3194,1516,309.41999999999996,True,True,
-Brillantes et al. 2026 (preprint),Allah River,Sto. Nino (Manuel Roxas),6.44,124.633,160.0,320.0,2024-12,meter; site mean,160.0,False,2972,1317,951.1587,True,True,
-Brillantes et al. 2026 (preprint),Allah River,Isulan (Bambad),6.572,124.598,155.0,310.0,2024-12,meter; site mean,155.0,False,2810,1272,1014.8652,True,True,
-Brillantes et al. 2026 (preprint),Allah River,Esperanza (Salabaca),6.718,124.592,165.0,330.0,2024-12,meter; site mean,165.0,False,2631,1267,1930.4487,True,True,
-Dimalen et al. 2025,Rio Grande de Mindanao,"Mother Kalanganan, Cotabato City",7.235277777777778,124.23222222222222,,329.7,2024-10,EC meter,166.1688,True,1998,820,20577.442499999997,True,True,
-Dimalen et al. 2025,Rio Grande de Mindanao,"Maidapa, Sultan Kudarat",7.212777777777778,124.29444444444444,,307.7,2024-10,EC meter,155.08079999999998,True,2024,900,19754.7093,True,True,
-Dimalen et al. 2025,Rio Grande de Mindanao,"Ganta, Mother Kabuntalan",7.126388888888888,124.39861111111112,,321.7,2024-10,EC meter,162.1368,True,2130,1027,18647.0019,True,True,
-Dimalen et al. 2025,Rio Grande de Mindanao,"Balong, Northern Kabuntalan",7.114444444444444,124.40277777777779,,311.0,2024-10,EC meter,156.744,True,2145,1030,15786.9324,True,True,
-Dimalen et al. 2025,Rio Grande de Mindanao,"Reina Regente, Datu Piang",7.029166666666667,124.50722222222223,,320.3,2024-10,EC meter,161.43120000000002,True,2252,1158,15722.067599999998,True,True,
-Dumago et al. 2018,Muleta watershed,"Upper Baguik-ikan R., Pangantucan",7.91927,124.8655,56.67,,2017-08/10,HORIBA probe; mean,56.67,False,1159,1597,5.8239,True,True,
-Dumago et al. 2018,Muleta watershed,"Malinao R., Kadingilan",7.58887,124.93805,80.0,,2017-08/10,HORIBA probe; mean,80.0,False,1562,1684,523.8999,True,True,
-Dumago et al. 2018,Muleta watershed,"Omonay R., Damulog",7.43495,124.87775,173.33,,2017-08/10,HORIBA probe; mean,173.33,False,1751,1617,734.2488,True,True,
-Galarpe et al. 2017,Salug River,S1 Salug Bridge,7.75495,125.39571666666667,121.0,179.0,2017-01-01,meter; single grab,121.0,False,1352,2245,0.0,False,False,excluded: decoded coordinates drain outside the delineated basin
-Galarpe et al. 2017,Tigua River,T1 Bonacao Bridge,7.799183333333334,125.39756666666666,137.0,204.0,2017-01-01,meter; single grab,137.0,False,1299,2246,21.302999999999997,True,True,
-Galarpe et al. 2017,Tigua River,T2 Supitan Bridge 2,7.83885,125.37565,130.0,194.0,2017-01-01,meter; single grab,130.0,False,1252,2225,125.69579999999999,True,True,
-Galarpe et al. 2017,Tigua River,T3 Halapitan,7.92565,125.33111666666667,136.0,205.0,2017-01-01,meter; single grab,136.0,False,1144,2170,291.94829999999996,True,True,
+source,river,site,lat,lon,TDS_mgL,EC_uScm,date,method,TDS_used,TDS_estimated_from_EC,row,col,upstream_km2,in_basin,use,snap_note,set
+Brillantes et al. 2026 (preprint),Allah River,Tboli (Laconon),6.142,124.773,130.0,250.0,2024-12,meter; site mean,130.0,False,3338,1494,86.589,True,True,,calibration
+Brillantes et al. 2026 (preprint),Allah River,Surallah (Veterans),6.259,124.793,170.0,340.0,2024-12,meter; site mean,170.0,False,3194,1516,309.42,True,True,,calibration
+Brillantes et al. 2026 (preprint),Allah River,Sto. Nino (Manuel Roxas),6.44,124.633,160.0,320.0,2024-12,meter; site mean,160.0,False,2972,1317,951.1587,True,True,,calibration
+Brillantes et al. 2026 (preprint),Allah River,Isulan (Bambad),6.572,124.598,155.0,310.0,2024-12,meter; site mean,155.0,False,2810,1272,1014.8652,True,True,,calibration
+Brillantes et al. 2026 (preprint),Allah River,Esperanza (Salabaca),6.718,124.592,165.0,330.0,2024-12,meter; site mean,165.0,False,2631,1267,1930.4487,True,True,,calibration
+Dimalen et al. 2025,Rio Grande de Mindanao,"Mother Kalanganan, Cotabato City",7.235277777777778,124.23222222222222,,329.7,2024-10,EC meter,166.1688,True,1998,820,20577.4425,True,True,,calibration
+Dimalen et al. 2025,Rio Grande de Mindanao,"Maidapa, Sultan Kudarat",7.212777777777778,124.29444444444444,,307.7,2024-10,EC meter,155.08079999999998,True,2024,900,19754.7093,True,True,,calibration
+Dimalen et al. 2025,Rio Grande de Mindanao,"Ganta, Mother Kabuntalan",7.126388888888888,124.39861111111112,,321.7,2024-10,EC meter,162.1368,True,2130,1027,18647.0019,True,True,,calibration
+Dimalen et al. 2025,Rio Grande de Mindanao,"Balong, Northern Kabuntalan",7.114444444444444,124.4027777777778,,311.0,2024-10,EC meter,156.744,True,2145,1030,15786.9324,True,True,,calibration
+Dimalen et al. 2025,Rio Grande de Mindanao,"Reina Regente, Datu Piang",7.029166666666667,124.50722222222224,,320.3,2024-10,EC meter,161.43120000000002,True,2252,1158,15722.067599999998,True,True,,calibration
+Dumago et al. 2018,Muleta watershed,"Upper Baguik-ikan R., Pangantucan",7.91927,124.8655,56.67,,2017-08/10,HORIBA probe; mean,56.67,False,1159,1597,5.8239,True,True,,calibration
+Dumago et al. 2018,Muleta watershed,"Malinao R., Kadingilan",7.58887,124.93805,80.0,,2017-08/10,HORIBA probe; mean,80.0,False,1562,1684,523.8999,True,True,,calibration
+Dumago et al. 2018,Muleta watershed,"Omonay R., Damulog",7.43495,124.87775,173.33,,2017-08/10,HORIBA probe; mean,173.33,False,1751,1617,734.2488,True,True,,calibration
+Galarpe et al. 2017,Salug River,S1 Salug Bridge,7.75495,125.39571666666669,121.0,179.0,2017-01-01,meter; single grab,121.0,False,1352,2245,0.0,False,False,excluded: decoded coordinates drain outside the delineated basin,calibration
+Galarpe et al. 2017,Tigua River,T1 Bonacao Bridge,7.799183333333334,125.39756666666666,137.0,204.0,2017-01-01,meter; single grab,137.0,False,1299,2246,21.303,True,True,,calibration
+Galarpe et al. 2017,Tigua River,T2 Supitan Bridge 2,7.83885,125.37565,130.0,194.0,2017-01-01,meter; single grab,130.0,False,1252,2225,125.6958,True,True,,calibration
+Galarpe et al. 2017,Tigua River,T3 Halapitan,7.92565,125.33111666666667,136.0,205.0,2017-01-01,meter; single grab,136.0,False,1144,2170,291.9483,True,True,,calibration
+Villabeto & Simpol 2014,Kulaman-Tinanan (Arakan),Kulaman R. above confluence,7.36339,125.09488,194.0,,2009-10/2010-03,lab; mean of biweekly samples,194.0,False,1838,1881,340.9047,True,True,"position inferred: larger inflow at the confluence near Brgy. Doroluman (7.3544N,125.0900E)",independent test
+Villabeto & Simpol 2014,Kulaman-Tinanan (Arakan),Tinanan R. above confluence,7.35117,125.09808,211.0,,2009-10/2010-03,lab; mean of biweekly samples,211.0,False,1853,1885,182.0718,True,True,position inferred: smaller inflow at the confluence near Brgy. Doroluman,independent test
+Villabeto & Simpol 2014,Kulaman-Tinanan (Arakan),1.5 km below confluence,7.36838,125.07209,206.0,,2009-10/2010-03,lab; mean of biweekly samples,206.0,False,1832,1853,537.2406,True,True,snapped to largest channel within 2 km of Brgy. Doroluman,independent test
+Quimpang et al. (CMU J. Sci.),Mt Apo rivers,Marbel R. (Mt Apo),7.02024,125.23011,300.0,,2012-2015,"meter; mean of reported period means (0.25/0.35 and 0.16/0.26, read as g/L)",300.0,False,2259,2049,16.0461,True,True,"midpoint of reported river extent, snapped within 720 m",independent test
+Quimpang et al. (CMU J. Sci.),Mt Apo rivers,Matingao R. (Mt Apo),7.02689,125.20002,210.0,,2012-2015,"meter; mean of reported period means (0.25/0.35 and 0.16/0.26, read as g/L)",210.0,False,2251,2012,6.723,True,True,"midpoint of reported river extent, snapped within 720 m",independent test
+Alombro et al. 2023,Rio Grande de Mindanao,"Rio Grande, Cotabato City (Aug 2022)",7.23637,124.22967,114.0,,2022-08,lab; mean of 3 stations,114.0,False,1998,820,20577.442499999997,True,True,location approximate (Cotabato City reach; no coordinates given),independent test

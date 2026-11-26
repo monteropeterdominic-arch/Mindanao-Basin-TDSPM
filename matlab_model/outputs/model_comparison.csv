@@ -1,6 +1,7 @@
-model,n_parameters,rmse_fit,rmse_loo,rho_loo,rmse_loro,rho_loro
-Null (mean of training sites),1,31.61,33.72,NaN,36.29,NaN
-5 classes,5,20.33,35.86,0.090,34.50,0.455
-3 groups: natural / human / water,3,26.87,36.90,0.016,54.17,0.371
-2 groups: natural / human+water,2,29.10,34.42,0.178,35.30,0.210
-2 groups: tree / non-tree,2,26.51,33.71,0.233,31.50,0.375
+model,n_parameters,test_rmse,test_bias,test_rho,loo_rmse,loo_rho,loro_rmse,loro_rho
+Null (training mean),1,82.53,-62.42,NaN,50.18,NaN,52.47,NaN
+Tree / non-tree,2,96.42,-68.17,-0.943,58.80,-0.717,61.21,-0.660
+Tree / non-tree + population,3,96.44,-61.66,-0.086,59.92,-0.633,62.74,-0.619
+Tree / cropland / other + population,4,84.92,-44.90,-0.257,56.09,0.043,58.75,-0.438
+5 classes + population,6,87.55,-49.72,-0.657,56.24,0.050,60.13,-0.358
+Uniform background + population,2,95.85,-62.29,-0.086,53.18,-0.464,54.11,-0.246

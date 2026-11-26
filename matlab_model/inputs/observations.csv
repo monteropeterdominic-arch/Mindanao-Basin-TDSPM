@@ -1,17 +1,23 @@
-site,river,TDS_used,cell_index
-Tboli (Laconon),Allah River,130.0,2509803
-Surallah (Veterans),Allah River,170.0,2524792
-Sto. Nino (Manuel Roxas),Allah River,160.0,2533028
-Isulan (Bambad),Allah River,155.0,2534958
-Esperanza (Salabaca),Allah River,165.0,2536266
-"Mother Kalanganan, Cotabato City",Rio Grande de Mindanao,166.1688,2541028
-"Maidapa, Sultan Kudarat",Rio Grande de Mindanao,155.08079999999998,2540946
-"Ganta, Mother Kabuntalan",Rio Grande de Mindanao,162.1368,2540751
-"Balong, Northern Kabuntalan",Rio Grande de Mindanao,156.744,2540735
-"Reina Regente, Datu Piang",Rio Grande de Mindanao,161.43120000000002,2540570
-"Upper Baguik-ikan R., Pangantucan",Muleta watershed,56.67,2456501
-"Malinao R., Kadingilan",Muleta watershed,80.0,2532247
-"Omonay R., Damulog",Muleta watershed,173.33,2535078
-T1 Bonacao Bridge,Tigua River,137.0,2483793
-T2 Supitan Bridge 2,Tigua River,130.0,2512032
-T3 Halapitan,Tigua River,136.0,2525193
+site,river,TDS_used,cell_index,set
+Tboli (Laconon),Allah River,130.0,2509803,calibration
+Surallah (Veterans),Allah River,170.0,2524792,calibration
+Sto. Nino (Manuel Roxas),Allah River,160.0,2533028,calibration
+Isulan (Bambad),Allah River,155.0,2534958,calibration
+Esperanza (Salabaca),Allah River,165.0,2536266,calibration
+"Mother Kalanganan, Cotabato City",Rio Grande de Mindanao,166.1688,2541028,calibration
+"Maidapa, Sultan Kudarat",Rio Grande de Mindanao,155.08079999999998,2540946,calibration
+"Ganta, Mother Kabuntalan",Rio Grande de Mindanao,162.1368,2540751,calibration
+"Balong, Northern Kabuntalan",Rio Grande de Mindanao,156.744,2540735,calibration
+"Reina Regente, Datu Piang",Rio Grande de Mindanao,161.43120000000002,2540570,calibration
+"Upper Baguik-ikan R., Pangantucan",Muleta watershed,56.67,2456501,calibration
+"Malinao R., Kadingilan",Muleta watershed,80.0,2532247,calibration
+"Omonay R., Damulog",Muleta watershed,173.33,2535078,calibration
+T1 Bonacao Bridge,Tigua River,137.0,2483793,calibration
+T2 Supitan Bridge 2,Tigua River,130.0,2512032,calibration
+T3 Halapitan,Tigua River,136.0,2525193,calibration
+Kulaman R. above confluence,Kulaman-Tinanan (Arakan),194.0,2528277,independent test
+Tinanan R. above confluence,Kulaman-Tinanan (Arakan),211.0,2526412,independent test
+1.5 km below confluence,Kulaman-Tinanan (Arakan),206.0,2529643,independent test
+Marbel R. (Mt Apo),Mt Apo rivers,300.0,2484039,independent test
+Matingao R. (Mt Apo),Mt Apo rivers,210.0,2480722,independent test
+"Rio Grande, Cotabato City (Aug 2022)",Rio Grande de Mindanao,114.0,2541028,independent test

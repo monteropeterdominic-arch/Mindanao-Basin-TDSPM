@@ -1,4 +1,4 @@
-function [Q, Lk] = tds_route(down, starts, F, r, e)
+function [Q, Lk, Ex] = tds_route(down, starts, F, r, e, X)
 % TDS_ROUTE  Steady-state routing of water and land-cover solute loads
 % through a D8 river network (cells ordered upstream -> downstream).
 %
@@ -9,6 +9,8 @@ function [Q, Lk] = tds_route(down, starts, F, r, e)
 %   e      : evaporative water-loss fraction per unit open-water/wetland
 %            cover per cell (-); applied to water only, so TDS concentrates
 %
+%   X      : (optional) n x m extra quantities routed as they are, e.g.
+%            population; returned accumulated in Ex
 %   Q      : n x 1 routed water flux (relative units, uniform rainfall)
 %   Lk     : n x K routed solute load from each class per unit source
 %            concentration, so  TDS = (Lk * c) ./ Q  for class
@@ -17,6 +19,8 @@ function [Q, Lk] = tds_route(down, starts, F, r, e)
 % Works in MATLAB (R2016b+) and GNU Octave (>= 6).
 
 n = numel(down);
+if nargin < 6, X = zeros(n, 0); end
+Ex = X;
 K = size(F, 2);
 q  = F * r(:);                 % local runoff of each cell
 Q  = q;
@@ -36,6 +40,9 @@ for l = 1:m
         Q(ud) = Q(ud) + accumarray(g, Q(src));
         for k = 1:K
             Lk(ud, k) = Lk(ud, k) + accumarray(g, Lk(src, k));
+        end
+        for k = 1:size(Ex, 2)
+            Ex(ud, k) = Ex(ud, k) + accumarray(g, Ex(src, k));
         end
     end
 end
