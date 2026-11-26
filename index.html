@@ -157,14 +157,14 @@ fetch('data.json').then(r => r.json()).then(j => {
   const outline = L.polygon(D.outline, {color: '#ffffff', weight: 1.5, fill: false, dashArray: '4 3'}).addTo(map);
   map.fitBounds(outline.getBounds());
   for (const sg of D.segs) {
-    const w = Math.max(1, Math.min(6, 0.9 * Math.log10(sg[3])));
+    const w = Math.max(1.5, Math.min(6, 1.1 * Math.log10(sg[3])));
     const ln = L.polyline(sg[0], {weight: w, opacity: 0.95, color: '#888'}).addTo(map);
     ln.on('click', e => { const [a, b] = ln._v; L.popup().setLatLng(e.latlng).setContent(
       `<b>River reach</b><br>Drains ${Number(sg[3]).toLocaleString()} km²<br>Upstream population ${Math.round(sg[2]).toLocaleString()}<br>Forest share ${(100 * sg[1][0] / sg[1].reduce((x, y) => x + y, 0)).toFixed(0)}%<br>TDS today ${a.toFixed(1)} mg/L<br>Scenario ${b.toFixed(1)} mg/L (${b - a >= 0 ? '+' : ''}${(b - a).toFixed(2)})`).openOn(map); });
     lines.push(ln);
   }
   sites = D.sites.map(st => {
-    const mk = L.marker([st.lat, st.lon], {icon: L.divIcon({className: '', html: `<div style="width:12px;height:12px;border:2px solid #111;background:${st.set === 'calibration' ? '#111' : '#fff'}"></div>`, iconSize: [12, 12]})}).addTo(map);
+    const mk = L.marker([st.lat, st.lon], {icon: L.divIcon({className: '', html: `<div style="width:9px;height:9px;border:1.5px solid #111;background:${st.set === 'calibration' ? '#111' : '#fff'}"></div>`, iconSize: [9, 9]})}).addTo(map);
     mk.on('click', () => mk.bindPopup(`<b>${esc(st.n)}</b><br>${esc(st.r)} · ${esc(st.set)}<br>${esc(st.src)}, ${esc(st.date)}<br>Observed ${st.obs} mg/L<br>Model (fitted, this structure) ${mk._pred.toFixed(1)} mg/L<br>Predicted with its river held out ${st.loro} mg/L (selected model)`).openPopup());
     return mk;
   });
