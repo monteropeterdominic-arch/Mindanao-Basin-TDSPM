@@ -73,9 +73,9 @@ select{width:100%;font:inherit;padding:8px;border:1px solid var(--rule);border-r
   <div class="warn">Validation on 22 published sites: no structure predicts held-out rivers better than the average of the other sites (best 54.1 vs 52.5 mg/L), and repeat surveys of the same spot differ by 44 mg/L. Treat maps as scenarios, not measurements. Squares are published sites: click one to compare.</div>
 
   <h2>Map layers</h2>
-  <p class="small">Use the layer box at the top right of the map to switch on land cover, tree cover, population, elevation, slope, the Mt Apo volcanic zone and the 30 proposed sampling sites.</p>
+  <p class="small">Use the layer box at the top right of the map to switch on land cover, tree cover, population, elevation, slope, rock type, the Mt Apo volcanic zone and the 30 proposed sampling sites.</p>
   <h2>Data</h2>
-  <p class="small">Terrain ALOS AW3D30 (OpenTopography); land cover ESA WorldCover 2021; population WorldPop 2020; 22 published TDS surveys. Imagery © Esri; streets © OpenStreetMap contributors. Built-up doubling is applied to routed totals, an approximation.</p>
+  <p class="small">Terrain ALOS AW3D30 (OpenTopography); land cover ESA WorldCover 2021; population WorldPop 2020; 22 published TDS surveys. Geology USGS OFR 97-470-F. Imagery © Esri; streets © OpenStreetMap contributors. Built-up doubling is applied to routed totals, an approximation.</p>
   <p class="small"><a href="TDS_MRB_GoogleEarth.kml" download>Download for Google Earth / Google My Maps (KML)</a> · <a href="https://github.com/monteropeterdominic-arch/Mindanao-Basin-TDSPM">Code, data and paper</a></p>
 </div>
 <div id="map"></div>
@@ -130,7 +130,7 @@ const layerCtl = L.control.layers({'Satellite + labels': hybrid, 'Streets (OSM)'
 const ovLegend = L.control({position: 'bottomleft'});
 ovLegend.onAdd = () => { const d = L.DomUtil.create('div', 'legend'); d.id = 'ovlegend'; d.style.display = 'none'; return d; };
 ovLegend.addTo(map);
-const OVN = {landcover: 'Land cover (WorldCover 2021)', tree: 'Tree cover', population: 'Population density (WorldPop 2020)', elevation: 'Elevation (AW3D30)', slope: 'Slope'};
+const OVN = {landcover: 'Land cover (WorldCover 2021)', tree: 'Tree cover', population: 'Population density (WorldPop 2020)', elevation: 'Elevation (AW3D30)', slope: 'Slope', lithology: 'Rock type (USGS)'};
 const active = new Set();
 function drawOvLegend(M) {
   const el = $('ovlegend'); if (!active.size) { el.style.display = 'none'; return; }
