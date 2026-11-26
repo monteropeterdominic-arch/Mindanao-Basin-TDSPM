@@ -70,8 +70,10 @@ select{width:100%;font:inherit;padding:8px;border:1px solid var(--rule);border-r
     <div><b id="o_pop">–</b><span>share from population</span></div>
   </div>
 
-  <div class="warn">Validation on 22 published sites: no structure predicts held-out rivers better than the average of the other sites (best 54.1 vs 52.5 mg/L). Treat maps as scenarios, not measurements. Squares are published sites: click one to compare.</div>
+  <div class="warn">Validation on 22 published sites: no structure predicts held-out rivers better than the average of the other sites (best 54.1 vs 52.5 mg/L), and repeat surveys of the same spot differ by 44 mg/L. Treat maps as scenarios, not measurements. Squares are published sites: click one to compare.</div>
 
+  <h2>Map layers</h2>
+  <p class="small">Use the layer box at the top right of the map to switch on land cover, tree cover, population, elevation, slope, the Mt Apo volcanic zone and the 30 proposed sampling sites.</p>
   <h2>Data</h2>
   <p class="small">Terrain ALOS AW3D30 (OpenTopography); land cover ESA WorldCover 2021; population WorldPop 2020; 22 published TDS surveys. Imagery © Esri; streets © OpenStreetMap contributors. Built-up doubling is applied to routed totals, an approximation.</p>
   <p class="small"><a href="TDS_MRB_GoogleEarth.kml" download>Download for Google Earth / Google My Maps (KML)</a> · <a href="https://github.com/monteropeterdominic-arch/Mindanao-Basin-TDSPM">Code, data and paper</a></p>
@@ -124,7 +126,33 @@ const lab = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Re
 const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '© OpenStreetMap contributors'});
 const topo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Topo © Esri'});
 const hybrid = L.layerGroup([sat, lab]).addTo(map);
-L.control.layers({'Satellite + labels': hybrid, 'Streets (OSM)': osm, 'Topographic': topo}, {}, {position: 'topright'}).addTo(map);
+const layerCtl = L.control.layers({'Satellite + labels': hybrid, 'Streets (OSM)': osm, 'Topographic': topo}, {}, {position: 'topright', collapsed: window.innerWidth < 900}).addTo(map);
+const ovLegend = L.control({position: 'bottomleft'});
+ovLegend.onAdd = () => { const d = L.DomUtil.create('div', 'legend'); d.id = 'ovlegend'; d.style.display = 'none'; return d; };
+ovLegend.addTo(map);
+const OVN = {landcover: 'Land cover (WorldCover 2021)', tree: 'Tree cover', population: 'Population density (WorldPop 2020)', elevation: 'Elevation (AW3D30)', slope: 'Slope'};
+const active = new Set();
+function drawOvLegend(M) {
+  const el = $('ovlegend'); if (!active.size) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = [...active].map(k => { const L_ = M.legends[k]; if (!L_) return '';
+    if (L_.type === 'cat') return `<b>${esc(OVN[k])}</b><br>` + L_.items.map(([c, n]) => `<span style="display:inline-block;width:10px;height:10px;background:${c};margin-right:4px"></span>${esc(n)}`).join('<br>');
+    return `<b>${esc(OVN[k])}</b><div class="bar" style="background:linear-gradient(90deg,${L_.stops.join(',')})"></div><div class="ticks"><span>${esc(L_.lo)}</span><span>${esc(L_.hi)}</span></div>`; }).join('<hr style="border:0;border-top:1px solid #ddd">');
+}
+fetch('layers/meta.json').then(r => r.json()).then(M => {
+  for (const k of Object.keys(OVN)) {
+    const lyr = L.imageOverlay(`layers/${k}.png`, M.bounds, {opacity: 0.75, interactive: false});
+    lyr._k = k; layerCtl.addOverlay(lyr, OVN[k]);
+  }
+  const apo = L.layerGroup([L.circle(M.apo, {radius: 25000, color: '#ff7a00', weight: 2, fill: true, fillOpacity: 0.08}),
+    L.circleMarker(M.apo, {radius: 5, color: '#ff7a00', fillOpacity: 1}).bindPopup('<b>Mt Apo</b> (6.988°N, 125.271°E)<br>Volcano with solfataras. Proximity to it fitted the high Mt Apo TDS values but could not be validated by river (only one sampled river drains it).')]);
+  layerCtl.addOverlay(apo, 'Mt Apo volcanic zone (25 km)');
+  const prop = L.layerGroup(M.proposed.map(([id, la, lo, a, t, s]) => L.circleMarker([la, lo], {radius: 6, color: '#111', weight: 1.5, fillColor: '#f2c14e', fillOpacity: 1})
+    .bindPopup(`<b>Proposed site ${esc(id)}</b><br>Drains ${a} km², ${t}% tree cover upstream<br>Tree-cover stratum ${s} of 5`)));
+  layerCtl.addOverlay(prop, 'Proposed sampling sites (30)');
+  map.on('overlayadd', e => { if (e.layer._k) { active.add(e.layer._k); drawOvLegend(M); } });
+  map.on('overlayremove', e => { if (e.layer._k) { active.delete(e.layer._k); drawOvLegend(M); } });
+});
 L.control.scale({imperial: false}).addTo(map);
 const legend = L.control({position: 'bottomright'});
 legend.onAdd = () => { const d = L.DomUtil.create('div', 'legend'); d.id = 'legend'; return d; };
